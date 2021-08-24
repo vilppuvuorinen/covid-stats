@@ -1,0 +1,4 @@
+pandas
+requests
+matplotlib==3.4.3
+mpld3==0.5.5
