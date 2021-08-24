@@ -7,7 +7,7 @@ from mpld3 import plugins
 
 from thl import load_daily_cases
 
-_HTML = 'covid.html'
+_HTML = 'public/index.html'
 
 
 def _render_fig(ax) -> str:
@@ -30,7 +30,6 @@ def _daily_symptomatic_population(data: pd.DataFrame) -> str:
 
     return f"""
     <h2>Total symptomatic population</h2>
-    <p><i>Assuming flat 4 week symptomatic period.</i></p>
     {_render_fig(ax)}
     """
 
@@ -49,7 +48,6 @@ def _daily_symptomatic_population_delta(data: pd.DataFrame) -> str:
 
     return f"""
     <h2>Change in symptomatic population per day</h2>
-    <p><i>Assuming a flat 4 week symptomatic period.</i></p>
     {_render_fig(ax)}
     """
 
@@ -71,7 +69,6 @@ def _daily_symptomatic_population_delta_percentage(data: pd.DataFrame) -> str:
 
     return f"""
     <h2>Relative change in symptomatic population per day</h2>
-    <p><i>Assuming a flat 4 week symptomatic period.</i></p>
     {_render_fig(ax)}
     """
 
@@ -105,7 +102,6 @@ def _14d_deltas(data: pd.DataFrame) -> str:
 
     return f"""
     <h2>14 day deltas</h2>
-    <p>Relative change in symptomatic population in the past 14 days.</p>
     <table>
     <tr>
     <th>District</th>
@@ -146,7 +142,6 @@ def _60d_deltas(data: pd.DataFrame) -> str:
 
     return f"""
     <h2>60 day deltas</h2>
-    <p>Relative change in symptomatic population in the past 60 days.</p>
     <table>
     <tr>
     <th>District</th>
@@ -168,7 +163,7 @@ def process():
     if os.path.exists(_HTML):
         os.remove(_HTML)
 
-    with open('public/index.html', 'a') as f:
+    with open(_HTML, 'a') as f:
         f.write(f"""
         <!doctype html>
 
@@ -179,6 +174,31 @@ def process():
             <title>COVID stats with some assumptions</title>
         </head>
         <body>
+        <h1>COVID-19 stats with some assumptions</h1>
+        <p>
+        Every single news outlet on the planet reports changes in COVID-19 cases against all time
+        case count. The cases from January 2020 are irrelevant if you want to know today's
+        outlook. What matters today is the size of the infected population. Only infected people
+        can get sick and/or infect others.
+        </p>
+        <p>
+        Let's be clear for a second here. We don't even have 100% reliable information on the
+        daily cases. All we have are the daily confirmed case published by national health
+        organizations. For example, THL here in Finland. There's no way to accurately determine the
+        size of the infected population.
+        </p>
+        <p>
+        It is clearly time to make some assumptions
+        <ul>
+            <li>It takes several days from the initial exposure until the symptoms kick in. Some
+            times they don't kick in at all. Who even knows when you can spread the infection? —
+            Let's assume that everyone gets tested on the same day the symptoms kick in.</li>
+            <li>A mild case can keep you coughing for 2-4 weeks and the severe cases can go on and
+            on. Has anyone even studied this thing? — Let's assume every case keeps you symptomatic
+            and spreading the disease for 4 weeks.</li>
+        </ul>
+        </p>
+        <p>Now we can build some data around these assumptions.</p>
         {_daily_symptomatic_population(data)}
         {_daily_symptomatic_population_delta(data)}
         {_daily_symptomatic_population_delta_percentage(data)}
